@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.event_home.EventHomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/action_home_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/upcomingFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.event_upcoming.EventUpcomingFragment"
+        android:label="Upcoming Events">
+        <action
+            android:id="@+id/action_upcoming_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:popUpTo="@id/upcomingFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/finishedFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.event_finished.EventFinishedFragment"
+        android:label="Finished Events">
+        <action
+            android:id="@+id/action_finished_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:popUpTo="@id/finishedFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.event_detail.EventDetailFragment"
+        android:label="Event Detail">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </fragment>
+</navigation>

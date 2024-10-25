@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/ic_event_home"
+        android:title="@string/homeEvent" />
+
+    <item
+        android:id="@+id/upcomingFragment"
+        android:icon="@drawable/ic_event_upcoming"
+        android:title="@string/eventAktif" />
+
+    <item
+        android:id="@+id/finishedFragment"
+        android:icon="@drawable/ic_event_finished"
+        android:title="@string/eventSelesai" />
+</menu>

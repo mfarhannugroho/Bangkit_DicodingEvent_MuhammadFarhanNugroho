@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">DicodingEventBangkit</string>
+    <string-array name="com_google_android_gms_fonts_certs" />
+    <string name="itemEvent">itemEvent</string>
+    <string name="eventAktif">Event Aktif</string>
+    <string name="eventSelesai">Event Selesai</string>
+    <string name="eventImageDescription">Event Logo</string>
+    <string name="eventLink">Buka Link Acara</string>
+    <string name="homeEvent">Beranda</string>
+    <string name="detailEvent">Detail Acara</string>
+    <string name="searchEvent">Cari Acara</string>
+    <string name="eventTime">Waktu: %1$s</string>
+    <string name="quotaRemaining">Kuota: %1$d/%2$d</string>
+    <string name="eventDescription">Deskripsi Acara</string>
+    <string name="eventLocation">Lokasi Acara</string>
+    <string name="eventDate">Tanggal: %1$s</string>
+    <string name="eventTimeStart">Waktu Mulai</string>
+    <string name="eventTimeEnd">Waktu Selesai</string>
+    <string name="eventSpeaker">Pembicara Acara</string>
+    <string name="eventBy">Penyelenggara: %1$s</string>
+    <string name="no_data">Data tidak tersedia</string>
+    <string name="search">Cari Event</string>
+    <string name="reloadEvent">Muat Ulang</string>
+    <string name="appTitle">Dicoding Event</string>
+    <string name="event_description_content_desc">Event description text</string>
+    <string name="geser_ke_samping">Geser ke samping ➜</string>">
+
+</resources>
