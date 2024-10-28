@@ -9,12 +9,15 @@ android {
     namespace = "com.bangkit_dicodingevent_farhan"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.bangkit_dicodingevent_farhan"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "BASE_URL", "\"https://event-api.dicoding.dev/\"")
     }
 
     buildTypes {
@@ -32,6 +35,7 @@ android {
         viewBinding = true
         //noinspection DataBindingWithoutKapt
         dataBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -81,4 +85,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
+    // --- RecyclerView ---
+    implementation(libs.androidx.recyclerview)
 }

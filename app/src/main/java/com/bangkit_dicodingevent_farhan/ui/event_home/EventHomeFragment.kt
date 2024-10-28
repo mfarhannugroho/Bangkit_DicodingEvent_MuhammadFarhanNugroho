@@ -5,45 +5,45 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bangkit_dicodingevent_farhan.R
 import com.bangkit_dicodingevent_farhan.adapter.EventListAdapter
 import com.bangkit_dicodingevent_farhan.data.local.database.EventDatabase
 import com.bangkit_dicodingevent_farhan.data.local.model.EventEntity
 import com.bangkit_dicodingevent_farhan.data.remote.retrofit.ApiClient
 import com.bangkit_dicodingevent_farhan.data.repository.EventRepository
+import com.bangkit_dicodingevent_farhan.databinding.FragmentEventHomeBinding
 import com.bangkit_dicodingevent_farhan.utils.NetworkUtils
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModel
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModelFactory
 
 class EventHomeFragment : Fragment() {
 
+    private var _binding: FragmentEventHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var viewModel: EventViewModel
     private lateinit var upcomingAdapter: EventListAdapter
     private lateinit var finishedAdapter: EventListAdapter
-    private var _progressBar: ProgressBar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_event_home, container, false)
+    ): View {
+        // Inflate the layout with ViewBinding
+        _binding = FragmentEventHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _progressBar = view.findViewById(R.id.progressBarHome)
-
         setupViewModel()
-        setupAdapters(view)
+        setupAdapters()
         setupObservers()
         fetchEvents()
     }
@@ -55,17 +55,17 @@ class EventHomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[EventViewModel::class.java]
     }
 
-    private fun setupAdapters(view: View) {
+    private fun setupAdapters() {
         // Setup Upcoming Events
-        upcomingAdapter = EventListAdapter(emptyList(), ::navigateToDetail)
-        view.findViewById<RecyclerView>(R.id.recyclerViewUpcomingHome).apply {
+        upcomingAdapter = EventListAdapter(::navigateToDetail)
+        binding.recyclerViewUpcomingHome.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = upcomingAdapter
         }
 
         // Setup Finished Events
-        finishedAdapter = EventListAdapter(emptyList(), ::navigateToDetail)
-        view.findViewById<RecyclerView>(R.id.recyclerViewFinishedHome).apply {
+        finishedAdapter = EventListAdapter(::navigateToDetail)
+        binding.recyclerViewFinishedHome.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = finishedAdapter
         }
@@ -74,15 +74,15 @@ class EventHomeFragment : Fragment() {
     private fun setupObservers() {
         with(viewModel) {
             isLoading.observe(viewLifecycleOwner) { isLoading ->
-                _progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
+                binding.progressBarHome.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
 
             upcomingEvents.observe(viewLifecycleOwner) { events ->
-                events?.let { upcomingAdapter.updateData(it) }
+                events?.let { upcomingAdapter.submitList(it) }
             }
 
             finishedEvents.observe(viewLifecycleOwner) { events ->
-                events?.let { finishedAdapter.updateData(it) }
+                events?.let { finishedAdapter.submitList(it) }
             }
 
             error.observe(viewLifecycleOwner) { errorMessage ->
@@ -100,7 +100,7 @@ class EventHomeFragment : Fragment() {
                 fetchFinishedEvents()
             }
         } else {
-            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -112,12 +112,12 @@ class EventHomeFragment : Fragment() {
             findNavController().navigate(R.id.action_home_to_eventDetailFragment, bundle)
         } catch (e: Exception) {
             Log.e("Navigation", "Failed to navigate to detail", e)
-            Toast.makeText(context, "Failed to open event detail", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.failed_to_open_event_detail), Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _progressBar = null
+        _binding = null
     }
 }

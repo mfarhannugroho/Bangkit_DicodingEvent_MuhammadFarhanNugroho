@@ -4,13 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -21,25 +15,28 @@ import com.bangkit_dicodingevent_farhan.data.local.database.EventDatabase
 import com.bangkit_dicodingevent_farhan.data.local.model.EventEntity
 import com.bangkit_dicodingevent_farhan.data.remote.retrofit.ApiClient
 import com.bangkit_dicodingevent_farhan.data.repository.EventRepository
+import com.bangkit_dicodingevent_farhan.databinding.FragmentEventDetailBinding
 import com.bangkit_dicodingevent_farhan.utils.HtmlCleaningFormatter.cleanAndFormatHtml
 import com.bangkit_dicodingevent_farhan.utils.NetworkUtils
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModel
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModelFactory
 import com.bumptech.glide.Glide
 
-
 @Suppress("DEPRECATION")
 class EventDetailFragment : Fragment() {
 
     private lateinit var viewModel: EventViewModel
     private lateinit var factory: EventViewModelFactory
+    private var _binding: FragmentEventDetailBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_event_detail, container, false)
+    ): View {
+        _binding = FragmentEventDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @SuppressLint("SetTextI18s")
@@ -47,62 +44,43 @@ class EventDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupViewModel()
-        setupObservers(view)
+        setupObservers()
         setupActionBar()
     }
 
     private fun setupViewModel() {
-        // Initialize Repository dengan ApiClient dan EventDatabase yang baru
         val database = EventDatabase.getDatabase(requireContext())
         val apiService = ApiClient.apiService
         val repository = EventRepository(database.eventDao(), apiService)
 
-        // Initialize ViewModel dengan Factory
         factory = EventViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[EventViewModel::class.java]
 
-        // Set loading state to true before fetching event detail
         viewModel.setLoading(true)
 
-        // Fetch event detail jika network tersedia
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             val eventId = arguments?.getInt("eventId") ?: 0
             viewModel.fetchEventDetail(eventId)
         } else {
-            Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
-            // Set loading state to false
+            Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
             viewModel.setLoading(false)
         }
     }
 
-    private fun setupObservers(view: View) {
-        // Observe event detail
+    private fun setupObservers() {
         viewModel.eventDetail.observe(viewLifecycleOwner) { event ->
-            // Bind event data
-            bindEventData(view, event)
-
-            // Set loading state to false
+            bindEventData(event)
             viewModel.setLoading(false)
         }
 
-        // Observe loading state
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            view.findViewById<ProgressBar>(R.id.progressBarDetail).visibility =
-                if (isLoading) View.VISIBLE else View.GONE
+            binding.progressBarDetail.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-
-        // Observe error messages
         viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
             errorMessage?.let {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.cannot_open_url), Toast.LENGTH_SHORT).show()
             }
-        }
-
-        // Observe loading state
-        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            view.findViewById<View>(R.id.progressBar)?.visibility =
-                if (isLoading) View.VISIBLE else View.GONE
         }
     }
 
@@ -113,30 +91,26 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18s", "SetTextI18n")
-    private fun bindEventData(view: View, event: EventEntity) {
-        with(view) {
-            findViewById<TextView>(R.id.eventName).text = event.name
-            findViewById<TextView>(R.id.eventOwner).text = "By: ${event.ownerName}"
-            findViewById<TextView>(R.id.eventTime).text = "Waktu: ${event.beginTime}"
-            findViewById<TextView>(R.id.eventQuota).text =
-                "Sisa Kuota: ${event.quota - event.registrants}"
+    @SuppressLint("SetTextI18s", "StringFormatMatches")
+    private fun bindEventData(event: EventEntity) {
+        with(binding) {
+            eventName.text = event.name
+            eventOwner.text = getString(R.string.eventBy, event.ownerName)
+            eventTime.text = getString(R.string.eventDate, event.beginTime)
+            eventQuota.text = getString(R.string.quotaRemaining, event.quota - event.registrants)
 
-            // Gunakan extension function untuk membersihkan HTML
-            findViewById<TextView>(R.id.eventDescription).apply {
+            eventDescription.apply {
                 text = event.description.cleanAndFormatHtml()
                 setLineSpacing(0f, 1.2f)
             }
 
-            // Load image menggunakan Glide
-            Glide.with(context)
+            Glide.with(requireContext())
                 .load(event.mediaCover)
                 .placeholder(R.drawable.background_bangkit)
                 .error(R.drawable.ic_error)
-                .into(findViewById(R.id.eventImage))
+                .into(eventImage)
 
-            // Setup event link button
-            findViewById<Button>(R.id.openEventLink).setOnClickListener {
+            openEventLink.setOnClickListener {
                 openEventUrl(event.link)
             }
         }
@@ -147,7 +121,7 @@ class EventDetailFragment : Fragment() {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
         } catch (e: Exception) {
-            Toast.makeText(context, "Cannot open URL", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.cannot_open_url), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -161,5 +135,10 @@ class EventDetailFragment : Fragment() {
 
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -8,45 +8,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bangkit_dicodingevent_farhan.R
 import com.bangkit_dicodingevent_farhan.data.local.model.EventEntity
 import com.bumptech.glide.Glide
 
 class EventListAdapter(
-    private var events: List<EventEntity>,
     private val onClick: (EventEntity) -> Unit
-) : RecyclerView.Adapter<EventListAdapter.EventViewHolder>() {
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newEvents: List<EventEntity>) {
-        Log.d("EventListAdapter", "Updating data with ${newEvents.size} items")
-        events = newEvents
-        notifyDataSetChanged()
-    }
+) : ListAdapter<EventEntity, EventListAdapter.EventViewHolder>(EventDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         Log.d("EventListAdapter", "Creating new ViewHolder")
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_event_list, parent, false)
-        return EventViewHolder(view).apply {
-            itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    Log.d("EventListAdapter", "Item clicked at position: $position")
-                    onClick(events[position])
-                }
-            }
-        }
+        return EventViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val event = events[position]
+        val event = getItem(position)
         Log.d("EventListAdapter", "Binding data for event: ${event.name}")
         holder.bind(event)
     }
-
-    override fun getItemCount(): Int = events.size
 
     inner class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val cardView: CardView = view.findViewById(R.id.eventCard)
@@ -57,31 +41,22 @@ class EventListAdapter(
         private val eventQuota: TextView = view.findViewById(R.id.eventQuota)
 
         init {
-            // Tambahkan click listener di CardView
             cardView.setOnClickListener {
-                val position = adapterPosition
+                val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     Log.d("EventListAdapter", "CardView clicked at position: $position")
-                    onClick(events[position])
+                    onClick(getItem(position))
                 }
             }
         }
 
         @SuppressLint("SetTextI18n")
         fun bind(event: EventEntity) {
-            // Set event name
             eventName.text = event.name
-
-            // Set event owner/organizer
             eventOwner.text = event.ownerName
-
-            // Format event date
             eventDate.text = "Waktu: ${event.beginTime}"
-
-            // Format event quota
             eventQuota.text = "Sisa Kuota: ${event.quota - event.registrants}"
 
-            // Load logo image using Glide
             try {
                 Glide.with(itemView.context)
                     .load(event.imageLogo)
@@ -93,7 +68,6 @@ class EventListAdapter(
                 eventImage.setImageResource(R.drawable.ic_error)
             }
 
-            // Tambahkan logging untuk debug
             Log.d(
                 "EventListAdapter", """
                 Binding event:
@@ -102,8 +76,18 @@ class EventListAdapter(
                 Owner: ${event.ownerName}
                 Begin Time: ${event.beginTime}
                 Logo URL: ${event.imageLogo}
-            """.trimIndent()
+                """.trimIndent()
             )
+        }
+    }
+
+    private class EventDiffCallback : DiffUtil.ItemCallback<EventEntity>() {
+        override fun areItemsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: EventEntity, newItem: EventEntity): Boolean {
+            return oldItem == newItem
         }
     }
 }

@@ -9,6 +9,8 @@
     <string name="homeEvent">Beranda</string>
     <string name="detailEvent">Detail Acara</string>
     <string name="searchEvent">Cari Acara</string>
+
+    <!-- Strings for Event Details -->
     <string name="eventTime">Waktu: %1$s</string>
     <string name="quotaRemaining">Kuota: %1$d/%2$d</string>
     <string name="eventDescription">Deskripsi Acara</string>
@@ -17,12 +19,19 @@
     <string name="eventTimeStart">Waktu Mulai</string>
     <string name="eventTimeEnd">Waktu Selesai</string>
     <string name="eventSpeaker">Pembicara Acara</string>
-    <string name="eventBy">Penyelenggara: %1$s</string>
+    <string name="eventBy">By: %1$s</string>
     <string name="no_data">Data tidak tersedia</string>
     <string name="search">Cari Event</string>
     <string name="reloadEvent">Muat Ulang</string>
     <string name="appTitle">Dicoding Event</string>
     <string name="event_description_content_desc">Event description text</string>
-    <string name="geser_ke_samping">Geser ke samping ➜</string>">
+    <string name="geser_ke_samping">Geser ke samping ➜</string>
 
+    <!-- Additional Strings for Hardcoded Replacements -->
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="cannot_open_url">Cannot open URL</string>
+    <string name="event_description_title">Event Description</string>
+    <string name="no_finished_events_found">No finished events found</string>
+    <string name="failed_to_open_event_detail">Failed to open event detail</string>
+    <string name="no_upcoming_events_found">No upcoming events found</string>
 </resources>
