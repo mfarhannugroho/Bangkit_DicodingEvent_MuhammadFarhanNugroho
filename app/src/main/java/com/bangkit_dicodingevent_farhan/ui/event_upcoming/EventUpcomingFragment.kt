@@ -12,14 +12,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit_dicodingevent_farhan.R
 import com.bangkit_dicodingevent_farhan.adapter.EventListAdapter
-import com.bangkit_dicodingevent_farhan.data.local.database.EventDatabase
 import com.bangkit_dicodingevent_farhan.data.local.model.EventEntity
-import com.bangkit_dicodingevent_farhan.data.remote.retrofit.ApiClient
-import com.bangkit_dicodingevent_farhan.data.repository.EventRepository
 import com.bangkit_dicodingevent_farhan.databinding.FragmentEventUpcomingBinding
+import com.bangkit_dicodingevent_farhan.di.Injection
 import com.bangkit_dicodingevent_farhan.utils.NetworkUtils
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModel
-import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModelFactory
 
 class EventUpcomingFragment : Fragment() {
 
@@ -32,7 +29,6 @@ class EventUpcomingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout with ViewBinding
         _binding = FragmentEventUpcomingBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,17 +36,17 @@ class EventUpcomingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupViewModel()
+        binding.btnReloadUpcoming.setOnClickListener {
+            fetchUpcomingEvents()
+        }
+
+        val factory = Injection.provideViewModelFactory(requireContext())
+        viewModel = ViewModelProvider(this, factory)[EventViewModel::class.java]
+
         setupRecyclerView()
         setupObservers()
-        fetchEvents()
-    }
-
-    private fun setupViewModel() {
-        val database = EventDatabase.getDatabase(requireContext())
-        val repository = EventRepository(database.eventDao(), ApiClient.apiService)
-        val factory = EventViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory)[EventViewModel::class.java]
+        setupReloadButton()
+        fetchUpcomingEvents()
     }
 
     private fun setupRecyclerView() {
@@ -80,16 +76,27 @@ class EventUpcomingFragment : Fragment() {
             error.observe(viewLifecycleOwner) { errorMessage ->
                 errorMessage?.let {
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    binding.btnReloadUpcoming.visibility = View.VISIBLE
                 }
             }
         }
     }
 
-    private fun fetchEvents() {
+    private fun setupReloadButton() {
+        binding.btnReloadUpcoming.setOnClickListener {
+            fetchUpcomingEvents()
+        }
+    }
+
+    private fun fetchUpcomingEvents() {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
-            viewModel.fetchUpcomingEvents()
+            binding.btnReloadUpcoming.visibility = View.GONE
+            viewModel.setLoading(true)
+            viewModel.fetchUpcomingEvents() // Fetch data list of events
         } else {
             Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+            binding.btnReloadUpcoming.visibility = View.VISIBLE
+            viewModel.setLoading(false)
         }
     }
 

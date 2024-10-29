@@ -15,7 +15,19 @@ class EventRepository(
         eventDao.insert(event)
     }
 
-    // Remote API operations
+    suspend fun delete(event: EventEntity) {
+        eventDao.delete(event)
+    }
+
+    suspend fun isEventFavorite(eventId: Int): Boolean {
+        return eventDao.getEventById(eventId) != null
+    }
+
+
+    suspend fun getFavoriteEvents(): List<EventEntity> {
+        return eventDao.getAllFavorites()
+    }
+
     suspend fun getUpcomingEvents(): Response<EventResponse> {
         return apiService.getEvents(1)
     }

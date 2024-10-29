@@ -10,9 +10,7 @@
         android:label="Home">
         <action
             android:id="@+id/action_home_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment"
-            app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/eventDetailFragment" />
     </fragment>
 
     <fragment
@@ -21,9 +19,7 @@
         android:label="Upcoming Events">
         <action
             android:id="@+id/action_upcoming_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment"
-            app:popUpTo="@id/upcomingFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/eventDetailFragment" />
     </fragment>
 
     <fragment
@@ -32,10 +28,22 @@
         android:label="Finished Events">
         <action
             android:id="@+id/action_finished_to_eventDetailFragment"
-            app:destination="@id/eventDetailFragment"
-            app:popUpTo="@id/finishedFragment"
-            app:popUpToInclusive="false" />
+            app:destination="@id/eventDetailFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.event_favorite.FavoriteFragment"
+        android:label="Favorite Events">
+        <action
+            android:id="@+id/action_favorite_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.bangkit_dicodingevent_farhan.ui.settings.SettingsFragment"
+        android:label="Settings" />
 
     <fragment
         android:id="@+id/eventDetailFragment"
@@ -44,5 +52,7 @@
         <argument
             android:name="eventId"
             app:argType="integer" />
+            <deepLink
+            app:uri="app://com.bangkit_dicodingevent_farhan/eventDetail/{eventId}" />
     </fragment>
 </navigation>

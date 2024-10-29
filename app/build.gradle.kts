@@ -30,7 +30,6 @@ android {
         }
     }
 
-    // Tambahkan baris ini untuk mengaktifkan data binding
     buildFeatures {
         viewBinding = true
         //noinspection DataBindingWithoutKapt
@@ -65,6 +64,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.monitor)
     implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidbrowserhelper)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit)
     ksp(libs.room.compiler)

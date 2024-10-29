@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="theme"
+        android:title="@string/choose_theme"
+        android:entries="@array/theme_options"
+        android:entryValues="@array/theme_values"
+        android:defaultValue="system"
+        android:summary="%s" />
+
+    <SwitchPreferenceCompat
+        android:key="notifications"
+        android:title="@string/enable_notifications"
+        android:summary="@string/enable_notifications_summary"
+        android:defaultValue="false" />
+
+    <Preference
+        android:key="reminder_time"
+        android:title="@string/reminder_time"
+        android:summary="@string/set_reminder_time_summary"
+        android:dependency="notifications" />
+</PreferenceScreen>

@@ -22,19 +22,48 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     private val _eventDetail = MutableLiveData<EventEntity>()
     val eventDetail: LiveData<EventEntity> = _eventDetail
 
+    private val _favoriteEvents = MutableLiveData<List<EventEntity>>()
+    val favoriteEvents: LiveData<List<EventEntity>> get() = _favoriteEvents
+
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private suspend fun updateFavoriteEvents() {
+        _favoriteEvents.postValue(repository.getFavoriteEvents())
+    }
+
     fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
 
-    private fun insert(event: EventEntity) {
+    fun addEventToFavorites(event: EventEntity) {
         viewModelScope.launch {
             repository.insert(event)
+            updateFavoriteEvents()
+        }
+    }
+
+    fun removeEventFromFavorites(event: EventEntity) {
+        viewModelScope.launch {
+            repository.delete(event)
+            updateFavoriteEvents()
+        }
+    }
+
+
+    suspend fun isEventFavorite(eventId: Int): Boolean {
+        return repository.isEventFavorite(eventId)
+    }
+
+    fun fetchFavoriteEvents() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            val events = repository.getFavoriteEvents()
+            _favoriteEvents.postValue(events)
+            _isLoading.postValue(false)
         }
     }
 
@@ -91,7 +120,6 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                 onSuccess = { events ->
                     if (!events.error) {
                         _upcomingEvents.postValue(events.listEvents)
-                        events.listEvents.forEach { insert(it) }
                     } else {
                         _error.postValue("Failed to fetch upcoming events")
                     }
@@ -107,7 +135,6 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
                 onSuccess = { events ->
                     if (!events.error) {
                         _finishedEvents.postValue(events.listEvents)
-                        events.listEvents.forEach { insert(it) }
                     } else {
                         _error.postValue("Failed to fetch finished events")
                     }

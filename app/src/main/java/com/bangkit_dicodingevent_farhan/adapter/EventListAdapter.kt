@@ -54,7 +54,7 @@ class EventListAdapter(
         fun bind(event: EventEntity) {
             eventName.text = event.name
             eventOwner.text = event.ownerName
-            eventDate.text = "Waktu: ${event.beginTime}"
+            eventDate.text = event.getFormattedBeginTime()
             eventQuota.text = "Sisa Kuota: ${event.quota - event.registrants}"
 
             try {
@@ -74,7 +74,7 @@ class EventListAdapter(
                 ID: ${event.id}
                 Name: ${event.name}
                 Owner: ${event.ownerName}
-                Begin Time: ${event.beginTime}
+                Begin Time: ${event.getFormattedBeginTime()}
                 Logo URL: ${event.imageLogo}
                 """.trimIndent()
             )

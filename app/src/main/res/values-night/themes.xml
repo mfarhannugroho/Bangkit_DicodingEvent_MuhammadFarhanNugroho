@@ -1,7 +1,21 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Bangkit_DicodingEvent_MuhammadFarhanNugroho" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Theme.BangkitDicodingEvent" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="colorPrimary">@color/white</item>
+
+        <item name="android:windowBackground">@color/backgroundNight</item>
+
+        <item name="android:textColorPrimary">@color/textPrimaryNight</item>
+        <item name="android:textColorSecondary">@color/textSecondaryNight</item>
+    </style>
+
+    <style name="EventDescriptionText" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:textColor">@color/textPrimaryNight</item>
     </style>
 </resources>

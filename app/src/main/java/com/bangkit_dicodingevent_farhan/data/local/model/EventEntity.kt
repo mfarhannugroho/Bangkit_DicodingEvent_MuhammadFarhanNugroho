@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Entity(tableName = "event_table")
 @Parcelize
@@ -39,4 +41,16 @@ data class EventEntity(
 
     @ColumnInfo(name = "link")
     val link: String
-) : Parcelable
+) : Parcelable {
+
+    fun getFormattedBeginTime(): String {
+        return try {
+            val originalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            val targetFormat = SimpleDateFormat("dd/MM/yyyy \n 'Pukul:' HH:mm", Locale.getDefault())
+            val date = originalFormat.parse(beginTime)
+            "Tanggal: ${targetFormat.format(date!!)}"
+        } catch (e: Exception) {
+            beginTime
+        }
+    }
+}
