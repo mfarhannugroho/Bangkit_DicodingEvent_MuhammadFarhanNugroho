@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    tools:context="ui.event_finished.EventFinishedFragment">
 
     <TextView
         android:id="@+id/tvFinishedEvents"
@@ -25,7 +25,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@android:drawable/editbox_background"
         app:iconifiedByDefault="false"
         app:queryHint="Cari Event..."
         app:searchIcon="@drawable/ic_search"
@@ -51,5 +50,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnReloadFinished"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reloadEvent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/progressBarFinished"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

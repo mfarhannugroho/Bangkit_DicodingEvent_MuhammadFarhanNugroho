@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.bangkit_dicodingevent_farhan.data.local.model.EventEntity
 
-@Database(entities = [EventEntity::class], version = 1, exportSchema = false)
+@Database(entities = [EventEntity::class], version = 2, exportSchema = false)
 abstract class EventDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
 
@@ -20,7 +20,9 @@ abstract class EventDatabase : RoomDatabase() {
                     context.applicationContext,
                     EventDatabase::class.java,
                     "event_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -4,11 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bangkit_dicodingevent_farhan.R
 import com.bangkit_dicodingevent_farhan.data.local.database.EventDatabase
@@ -21,6 +25,7 @@ import com.bangkit_dicodingevent_farhan.utils.NetworkUtils
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModel
 import com.bangkit_dicodingevent_farhan.viewmodel.EventViewModelFactory
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 class EventDetailFragment : Fragment() {
@@ -29,6 +34,8 @@ class EventDetailFragment : Fragment() {
     private lateinit var factory: EventViewModelFactory
     private var _binding: FragmentEventDetailBinding? = null
     private val binding get() = _binding!!
+
+    private var isFavorite: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +53,7 @@ class EventDetailFragment : Fragment() {
         setupViewModel()
         setupObservers()
         setupActionBar()
+        setupFavoriteButton()
     }
 
     private fun setupViewModel() {
@@ -70,6 +78,12 @@ class EventDetailFragment : Fragment() {
     private fun setupObservers() {
         viewModel.eventDetail.observe(viewLifecycleOwner) { event ->
             bindEventData(event)
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                isFavorite = viewModel.isEventFavorite(event.id)
+                updateFavoriteIcon()
+            }
+
             viewModel.setLoading(false)
         }
 
@@ -84,6 +98,7 @@ class EventDetailFragment : Fragment() {
         }
     }
 
+
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
@@ -91,13 +106,14 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18s", "StringFormatMatches")
+    @SuppressLint("SetTextI18n", "StringFormatMatches")
     private fun bindEventData(event: EventEntity) {
         with(binding) {
             eventName.text = event.name
             eventOwner.text = getString(R.string.eventBy, event.ownerName)
-            eventTime.text = getString(R.string.eventDate, event.beginTime)
-            eventQuota.text = getString(R.string.quotaRemaining, event.quota - event.registrants)
+            eventTime.text = event.getFormattedBeginTime()
+
+            eventQuota.text = getString(R.string.quotaRemaining, event.registrants, event.quota)
 
             eventDescription.apply {
                 text = event.description.cleanAndFormatHtml()
@@ -113,7 +129,35 @@ class EventDetailFragment : Fragment() {
             openEventLink.setOnClickListener {
                 openEventUrl(event.link)
             }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                isFavorite = viewModel.isEventFavorite(event.id)
+                updateFavoriteIcon()
+            }
         }
+    }
+
+
+    private fun setupFavoriteButton() {
+        binding.fabFavorite.setOnClickListener {
+            val event = viewModel.eventDetail.value
+            event?.let {
+                if (isFavorite) {
+                    viewModel.removeEventFromFavorites(it)
+                    Toast.makeText(context, getString(R.string.remove_from_favorite), Toast.LENGTH_SHORT).show()
+                } else {
+                    viewModel.addEventToFavorites(it)
+                    Toast.makeText(context, getString(R.string.add_to_favorite), Toast.LENGTH_SHORT).show()
+                }
+                isFavorite = !isFavorite
+                updateFavoriteIcon()
+            }
+        }
+    }
+
+    private fun updateFavoriteIcon() {
+        val iconRes = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
+        binding.fabFavorite.setImageResource(iconRes)
     }
 
     private fun openEventUrl(url: String) {

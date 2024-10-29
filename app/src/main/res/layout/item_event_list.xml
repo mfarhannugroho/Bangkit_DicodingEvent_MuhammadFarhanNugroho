@@ -9,14 +9,12 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     android:focusable="true"
-    android:clickable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:clickable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:background="?attr/selectableItemBackground"
         android:focusable="true">
 
         <ImageView
@@ -66,7 +64,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
-            android:textColor="#757575"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/eventImage"
@@ -78,7 +75,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:textColor="@color/design_default_color_primary"
             app:layout_constraintTop_toBottomOf="@id/eventDate"
             app:layout_constraintStart_toEndOf="@id/eventImage"
             android:layout_marginStart="8dp"

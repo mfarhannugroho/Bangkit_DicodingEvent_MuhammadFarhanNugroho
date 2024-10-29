@@ -14,4 +14,14 @@
         android:id="@+id/finishedFragment"
         android:icon="@drawable/ic_event_finished"
         android:title="@string/eventSelesai" />
+
+    <item
+        android:id="@+id/favoriteFragment"
+        android:icon="@drawable/ic_favorite_filled"
+        android:title="@string/favoriteEvent" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings" />
 </menu>
