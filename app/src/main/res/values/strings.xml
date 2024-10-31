@@ -1,25 +1,15 @@
 <resources>
     <string name="app_name">DicodingEventBangkit</string>
     <string-array name="com_google_android_gms_fonts_certs" />
-    <string name="itemEvent">itemEvent</string>
     <string name="eventAktif">Event Aktif</string>
     <string name="eventSelesai">Event Selesai</string>
     <string name="eventImageDescription">Event Logo</string>
     <string name="eventLink">Buka Link Acara</string>
     <string name="homeEvent">Beranda</string>
-    <string name="detailEvent">Detail Acara</string>
-    <string name="searchEvent">Cari Acara</string>
 
-    <string name="eventTime">Tanggal: %1$s</string>
-    <string name="quotaRemaining">Kuota: %1$d/%2$d</string>
+    <string name="quotaRemaining">Sisa Kuota: %1$d</string>
     <string name="eventDescription">Deskripsi Acara</string>
-    <string name="eventLocation">Lokasi Acara</string>
-    <string name="eventTimeStart">Waktu Mulai</string>
-    <string name="eventTimeEnd">Waktu Selesai</string>
-    <string name="eventSpeaker">Pembicara Acara</string>
     <string name="eventBy">By: %1$s</string>
-    <string name="no_data">Data tidak tersedia</string>
-    <string name="search">Cari Event</string>
     <string name="reloadEvent">Muat Ulang</string>
     <string name="appTitle">Dicoding Event</string>
     <string name="event_description_content_desc">Event description text</string>
@@ -27,21 +17,19 @@
 
     <string name="no_internet_connection">No internet connection</string>
     <string name="cannot_open_url">Cannot open URL</string>
-    <string name="event_description_title">Event Description</string>
     <string name="no_finished_events_found">No finished events found</string>
     <string name="failed_to_open_event_detail">Failed to open event detail</string>
     <string name="no_upcoming_events_found">No upcoming events found</string>
 
     <string name="favoriteEvent">Event Favorit</string>
     <string name="settings">Pengaturan</string>
-    <string name="theme_light">Tema Terang</string>
-    <string name="theme_dark">Tema Gelap</string>
     <string name="choose_theme">Pilih Tema</string>
     <string name="add_to_favorite">Tambah ke Favorit</string>
     <string name="remove_from_favorite">Hapus dari Favorit</string>
-    <string name="no_favorite_events_found">No favorite events found</string>
     <string name="enable_notifications">Enable Notifications</string>
     <string name="enable_notifications_summary">Enable notification summary</string>
     <string name="reminder_time">Reminder Time</string>
     <string name="set_reminder_time_summary">Set reminder time summary</string>
+    <string name="favorite_event">Favorite Event</string>
+    <string name="no_favorite_event">Tidak ada daftar event favorite</string>
 </resources>

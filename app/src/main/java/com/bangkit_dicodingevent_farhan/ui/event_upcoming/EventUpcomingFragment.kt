@@ -45,8 +45,7 @@ class EventUpcomingFragment : Fragment() {
 
         setupRecyclerView()
         setupObservers()
-        setupReloadButton()
-        fetchUpcomingEvents()
+        fetchUpcomingEvents()  // Initial data fetch
     }
 
     private fun setupRecyclerView() {
@@ -61,11 +60,13 @@ class EventUpcomingFragment : Fragment() {
         with(viewModel) {
             upcomingEvents.observe(viewLifecycleOwner) { events ->
                 events?.let {
+                    adapter.submitList(it)
+                    // Set isLoading to false when data has been loaded
+                    viewModel.setLoading(false)
                     if (it.isEmpty()) {
                         Toast.makeText(context, getString(R.string.no_upcoming_events_found), Toast.LENGTH_SHORT)
                             .show()
                     }
-                    adapter.submitList(it)
                 }
             }
 
@@ -82,21 +83,15 @@ class EventUpcomingFragment : Fragment() {
         }
     }
 
-    private fun setupReloadButton() {
-        binding.btnReloadUpcoming.setOnClickListener {
-            fetchUpcomingEvents()
-        }
-    }
-
     private fun fetchUpcomingEvents() {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
             binding.btnReloadUpcoming.visibility = View.GONE
-            viewModel.setLoading(true)
-            viewModel.fetchUpcomingEvents() // Fetch data list of events
+            viewModel.setLoading(true)  // Show loading before data fetch
+            viewModel.fetchUpcomingEvents()
         } else {
             Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
             binding.btnReloadUpcoming.visibility = View.VISIBLE
-            viewModel.setLoading(false)
+            viewModel.setLoading(false)  // Hide loading on network error
         }
     }
 

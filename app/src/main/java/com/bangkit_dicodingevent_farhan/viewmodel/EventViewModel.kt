@@ -31,6 +31,12 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _isLoadingUpcoming = MutableLiveData<Boolean>()
+    val isLoadingUpcoming: LiveData<Boolean> = _isLoadingUpcoming
+
+    private val _isLoadingFinished = MutableLiveData<Boolean>()
+    val isLoadingFinished: LiveData<Boolean> = _isLoadingFinished
+
     private suspend fun updateFavoriteEvents() {
         _favoriteEvents.postValue(repository.getFavoriteEvents())
     }
@@ -49,10 +55,9 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     fun removeEventFromFavorites(event: EventEntity) {
         viewModelScope.launch {
             repository.delete(event)
-            updateFavoriteEvents()
+            _favoriteEvents.value = repository.getFavoriteEvents()
         }
     }
-
 
     suspend fun isEventFavorite(eventId: Int): Boolean {
         return repository.isEventFavorite(eventId)
@@ -61,9 +66,13 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     fun fetchFavoriteEvents() {
         _isLoading.value = true
         viewModelScope.launch {
-            val events = repository.getFavoriteEvents()
-            _favoriteEvents.postValue(events)
-            _isLoading.postValue(false)
+            val favorites = repository.getFavoriteEvents()
+            _favoriteEvents.value = favorites
+            _isLoading.value = false
+
+            if (favorites.isEmpty()) {
+                _favoriteEvents.postValue(emptyList())
+            }
         }
     }
 
@@ -114,32 +123,38 @@ class EventViewModel(private val repository: EventRepository) : ViewModel() {
     }
 
     fun fetchUpcomingEvents() {
+        _isLoadingUpcoming.value = true
         viewModelScope.launch {
-            handleEventResponse(
-                apiCall = { repository.getUpcomingEvents() },
-                onSuccess = { events ->
-                    if (!events.error) {
-                        _upcomingEvents.postValue(events.listEvents)
-                    } else {
-                        _error.postValue("Failed to fetch upcoming events")
+            try {
+                val response = repository.getUpcomingEvents()
+                if (response.isSuccessful) {
+                    response.body()?.listEvents?.let {
+                        _upcomingEvents.postValue(it)
                     }
                 }
-            )
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoadingUpcoming.postValue(false)
+            }
         }
     }
 
     fun fetchFinishedEvents() {
+        _isLoadingFinished.value = true
         viewModelScope.launch {
-            handleEventResponse(
-                apiCall = { repository.getFinishedEvents() },
-                onSuccess = { events ->
-                    if (!events.error) {
-                        _finishedEvents.postValue(events.listEvents)
-                    } else {
-                        _error.postValue("Failed to fetch finished events")
+            try {
+                val response = repository.getFinishedEvents()
+                if (response.isSuccessful) {
+                    response.body()?.listEvents?.let {
+                        _finishedEvents.postValue(it)
                     }
                 }
-            )
+            } catch (e: Exception) {
+                _error.postValue(e.message)
+            } finally {
+                _isLoadingFinished.postValue(false)
+            }
         }
     }
 

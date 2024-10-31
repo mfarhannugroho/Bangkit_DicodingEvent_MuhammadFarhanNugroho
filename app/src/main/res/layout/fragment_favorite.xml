@@ -8,22 +8,53 @@
         android:layout_height="match_parent"
         tools:context=".ui.event_favorite.FavoriteFragment">
 
+        <!-- Judul halaman di pojok kiri atas -->
+        <TextView
+            android:id="@+id/tvFavoriteEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/favorite_event"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Pesan 'Belum ada favorite event' di tengah halaman -->
+        <TextView
+            android:id="@+id/tvNoFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_favorite_event"
+            android:visibility="gone"
+            android:textSize="16sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RecyclerView untuk menampilkan daftar event favorit -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewFavorites"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tvFavoriteEvent"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/item_event_list" />
 
+        <!-- Progress Bar untuk indikasi loading -->
         <ProgressBar
             android:id="@+id/progressBarFav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
+        <!-- Tombol Reload jika terjadi kesalahan memuat data -->
         <Button
             android:id="@+id/btnReloadFav"
             android:layout_width="wrap_content"

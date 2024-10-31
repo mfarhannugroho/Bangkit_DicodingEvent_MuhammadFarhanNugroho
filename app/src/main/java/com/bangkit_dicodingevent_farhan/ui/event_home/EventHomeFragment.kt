@@ -26,11 +26,11 @@ class EventHomeFragment : Fragment() {
     private lateinit var viewModel: EventViewModel
     private lateinit var upcomingAdapter: EventListAdapter
     private lateinit var finishedAdapter: EventListAdapter
-    private var _progressBar: ProgressBar? = null
+    private var _progressBarUpcoming: ProgressBar? = null
+    private var _progressBarFinished: ProgressBar? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_event_home, container, false)
@@ -39,7 +39,9 @@ class EventHomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _progressBar = view.findViewById(R.id.progressBarHome)
+        // Inisialisasi progress bars untuk "upcoming" dan "finished"
+        _progressBarUpcoming = view.findViewById(R.id.progressBarUpcomingHome)
+        _progressBarFinished = view.findViewById(R.id.progressBarFinishedHome)
 
         setupViewModel()
         setupAdapters(view)
@@ -55,13 +57,14 @@ class EventHomeFragment : Fragment() {
     }
 
     private fun setupAdapters(view: View) {
-        // Setup Upcoming Events
+        // Setup untuk Upcoming Events
         upcomingAdapter = EventListAdapter(::navigateToDetail)
         view.findViewById<RecyclerView>(R.id.recyclerViewUpcomingHome).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = upcomingAdapter
         }
 
+        // Setup untuk Finished Events
         finishedAdapter = EventListAdapter(::navigateToDetail)
         view.findViewById<RecyclerView>(R.id.recyclerViewFinishedHome).apply {
             layoutManager = LinearLayoutManager(context)
@@ -71,8 +74,20 @@ class EventHomeFragment : Fragment() {
 
     private fun setupObservers() {
         with(viewModel) {
-            isLoading.observe(viewLifecycleOwner) { isLoading ->
-                _progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
+            isLoadingUpcoming.observe(viewLifecycleOwner) { isLoading ->
+                Log.d(
+                    "EventHomeFragment",
+                    "Updating progressBarUpcomingHome visibility to: $isLoading"
+                )
+                _progressBarUpcoming?.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
+
+            isLoadingFinished.observe(viewLifecycleOwner) { isLoading ->
+                Log.d(
+                    "EventHomeFragment",
+                    "Updating progressBarFinishedHome visibility to: $isLoading"
+                )
+                _progressBarFinished?.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
 
             upcomingEvents.observe(viewLifecycleOwner) { events ->
@@ -98,7 +113,8 @@ class EventHomeFragment : Fragment() {
                 fetchFinishedEvents()
             }
         } else {
-            Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -110,12 +126,17 @@ class EventHomeFragment : Fragment() {
             findNavController().navigate(R.id.action_home_to_eventDetailFragment, bundle)
         } catch (e: Exception) {
             Log.e("Navigation", "Failed to navigate to detail", e)
-            Toast.makeText(context, getString(R.string.failed_to_open_event_detail), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                getString(R.string.failed_to_open_event_detail),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _progressBar = null
+        _progressBarUpcoming = null
+        _progressBarFinished = null
     }
 }
