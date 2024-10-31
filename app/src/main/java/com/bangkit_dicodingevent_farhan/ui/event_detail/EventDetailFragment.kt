@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -113,7 +114,8 @@ class EventDetailFragment : Fragment() {
             eventOwner.text = getString(R.string.eventBy, event.ownerName)
             eventTime.text = event.getFormattedBeginTime()
 
-            eventQuota.text = getString(R.string.quotaRemaining, event.registrants, event.quota)
+            val remainingQuota = event.quota - event.registrants
+            eventQuota.text = getString(R.string.quotaRemaining, remainingQuota, event.quota)
 
             eventDescription.apply {
                 text = event.description.cleanAndFormatHtml()
@@ -137,7 +139,6 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-
     private fun setupFavoriteButton() {
         binding.fabFavorite.setOnClickListener {
             val event = viewModel.eventDetail.value
@@ -145,6 +146,12 @@ class EventDetailFragment : Fragment() {
                 if (isFavorite) {
                     viewModel.removeEventFromFavorites(it)
                     Toast.makeText(context, getString(R.string.remove_from_favorite), Toast.LENGTH_SHORT).show()
+
+                    setFragmentResult("favoriteChanged", Bundle().apply {
+                        putBoolean("isFavoriteChanged", true)
+                    })
+
+                    viewModel.fetchFavoriteEvents()
                 } else {
                     viewModel.addEventToFavorites(it)
                     Toast.makeText(context, getString(R.string.add_to_favorite), Toast.LENGTH_SHORT).show()
@@ -154,6 +161,7 @@ class EventDetailFragment : Fragment() {
             }
         }
     }
+
 
     private fun updateFavoriteIcon() {
         val iconRes = if (isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border

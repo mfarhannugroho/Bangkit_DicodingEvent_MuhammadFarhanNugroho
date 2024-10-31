@@ -1,11 +1,12 @@
 package com.bangkit_dicodingevent_farhan.ui.event_favorite
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +43,13 @@ class FavoriteFragment : Fragment() {
         setupObservers()
 
         viewModel.fetchFavoriteEvents()
+
+        setFragmentResultListener("favoriteChanged") { _, bundle ->
+            val isFavoriteChanged = bundle.getBoolean("isFavoriteChanged", false)
+            if (isFavoriteChanged) {
+                viewModel.fetchFavoriteEvents()
+            }
+        }
     }
 
     private fun setupViewModel() {
@@ -59,6 +67,7 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun setupObservers() {
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBarFav.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -67,10 +76,14 @@ class FavoriteFragment : Fragment() {
         viewModel.favoriteEvents.observe(viewLifecycleOwner) { events ->
             binding.progressBarFav.visibility = View.GONE
             if (events.isNullOrEmpty()) {
-                Toast.makeText(context, getString(R.string.no_favorite_events_found), Toast.LENGTH_SHORT).show()
+                binding.recyclerViewFavorites.visibility = View.GONE
+                binding.tvNoFavorites.visibility = View.VISIBLE
             } else {
+                binding.recyclerViewFavorites.visibility = View.VISIBLE
+                binding.tvNoFavorites.visibility = View.GONE
                 adapter.submitList(events)
             }
+            adapter.notifyDataSetChanged()
         }
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -36,7 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
-        android:orientation="horizontal"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -53,7 +53,8 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewUpcomingHome" />
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewUpcomingHome"
+        tools:ignore="VisualLintBounds" />
 
     <TextView
         android:id="@+id/tvFinishedEvents"
@@ -65,7 +66,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvScrollIndicator" />
+        app:layout_constraintTop_toBottomOf="@id/tvScrollIndicator"
+        tools:ignore="VisualLintBounds" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFinishedHome"
@@ -74,29 +76,38 @@
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:padding="8dp"
-
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFinishedEvents"
         tools:listitem="@layout/item_event_list" />
 
     <ProgressBar
-        android:id="@+id/progressBarHome"
+        android:id="@+id/progressBarUpcomingHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBarFinishedHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/btnReloadFav"
+        android:id="@+id/btnReloadHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reloadEvent"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/progressBarHome"
+        app:layout_constraintTop_toBottomOf="@id/progressBarFinishedHome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
