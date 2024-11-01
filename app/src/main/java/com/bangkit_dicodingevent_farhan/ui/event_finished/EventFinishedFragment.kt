@@ -96,7 +96,7 @@ class EventFinishedFragment : Fragment() {
                 }
             }
 
-            isLoading.observe(viewLifecycleOwner) { isLoading ->
+            isLoadingFinished.observe(viewLifecycleOwner) { isLoading ->
                 binding.progressBarFinished.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
 
